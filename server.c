@@ -7,6 +7,8 @@
  * TODO: Calc Winner
  * TODO: TEst
  * TODO: Makefile?
+ * TODO: Read QUestions & Answers
+ * TODO: Parse QUestions
  *************************************************************************/
 
 
@@ -53,6 +55,8 @@ int main(int argc, char *argv[])
 
         connection_index++;
     }
+    
+    // OPEN FILES FOR READING!
     
     for(loop = 0; loop < CONNECTIONS; loop++){
         //  Send Questions to Clients
