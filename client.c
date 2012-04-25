@@ -1,3 +1,17 @@
+/****************************************************************************
+                                client.c
+ * usage: client.c <host>
+ 
+ * Connects to Host to Get Questions, and Answers
+ * Then sends answers to Host and finds out if winner
+ 
+ TODO: Documentation
+ TODO: timeout?
+ TODO: TEST!
+ TODO: Add Team Names?
+ ****************************************************************************/
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <cnaiapi.h>
@@ -12,24 +26,6 @@ int verify_input(char);
 char convert_case(char);
 computer make_connection(int, char*[]);
 
-//      Connect to Server, Appnum is 20001
-
-
-/*
- Client Behavior
- * 
- * read question from server
- * store input from user for answer
- * 
- * timeout function
- * 
- * read answer from server
- * 
- * verify user input
- * 
- * display winner/loser from server 
- 
- */
 
 int main(int argc, char *argv[]){
     computer comp;
@@ -38,12 +34,55 @@ int main(int argc, char *argv[]){
     char buff[BUFFSIZE];
     int	expect, received, len;
     
+    int answer_index = 0;
+    char answers[21];
+    int bad_input;
+    
+    // ***************** Check Args ************************//
     if (argc < 1 || argc > 2) {
         (void) fprintf(stderr, "usage: %s <compname>\n", argv[0]);
         exit(1);
     }
     
+    // *************** Make Connection ********************//
+    (void) printf("Connecting");
     comp = make_connection(argc, argv);
+
+    // **************** Start Game ***************************** //
+    while((len = recvln(conn, buff, BUFFSIZE)) > 0){   //      Game is playing
+    //  Read Question
+        (void) printf(RECEIVED_PROMPT);
+        (void) fflush(stdout);
+        (void) write(STDOUT_FILENO, buff, len);
+        
+    //  Get Answer
+        do{
+            (void) printf(INPUT_PROMPT);
+            (void) fflush(stdout);
+            len = readln(buff, BUFFSIZE);
+            bad_input = 0;
+
+            //  Verify
+            buff[0] = convert_case(buff[0]);
+
+            if(verify_input(buff[0]) != 0){
+                (void) printf("Bad Input\n");
+                bad_input = 1;
+            }
+        }
+        while(bad_input != 0);
+    
+    //  Store Answer
+        answers[answer_index] = buff[0];
+    
+    //  TODO: Timeout
+    
+    }
+    // ***************** Finish Game  ***************************//
+    // Get Winner/Loser
+    
+    (void) send_eof(conn);
+    (void) printf("\n");
     
     return 0;
 }
@@ -64,8 +103,6 @@ int main(int argc, char *argv[]){
             (void) fprintf(stderr,"comp == -1");
             exit(1);
     }
-	
-    /* form a connection with the echoserver */
 
     conn = make_contact(comp, app);
     if (conn < 0)
@@ -73,6 +110,8 @@ int main(int argc, char *argv[]){
         (void) fprintf(stderr,"conn < 0");
         exit(1);
     }
+    
+    (void) printf("Connected");    
     
     return comp;
 }
@@ -103,45 +142,3 @@ int main(int argc, char *argv[]){
      }
      return input;
 }
- 
-/* The Rest from Echo Client
- 
- *      (void) printf(INPUT_PROMPT);
-	(void) fflush(stdout);
-
-	// iterate: read input from the user, send to the server,	
-	//	    receive reply from the server, and display for user 
-
-	while((len = readln(buff, BUFFSIZE)) > 0) {
-
-		// send the input to the echoserver
-
-		(void) send(conn, buff, len, 0);
-		(void) printf(RECEIVED_PROMPT);
-		(void) fflush(stdout);
-
-		// read and print same no. of bytes from echo server
-
-		expect = len;
-		for (received = 0; received < expect;) {
-		   len = recv(conn, buff, (expect - received) < BUFFSIZE ?
-				 (expect - received) : BUFFSIZE, 0);
-			if (len < 0) {
-				send_eof(conn);
-				return 1;
-			}
-			(void) write(STDOUT_FILENO, buff, len);
-			received += len;
-		}
-		(void) printf("\n");
-		(void) printf(INPUT_PROMPT);
-		(void) fflush(stdout);
-	}
-
-	//iteration ends when EOF found on stdin
-
-	(void) send_eof(conn);
-	(void) printf("\n");
-	return 0;
- * 
- */
