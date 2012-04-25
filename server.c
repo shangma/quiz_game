@@ -2,7 +2,11 @@
                                 server.c
  usage: server.c
  
- * TODO: ...Everything
+ * TODO: Send Questions
+ * TODO: Get ANswers
+ * TODO: Calc Winner
+ * TODO: TEst
+ * TODO: Makefile?
  *************************************************************************/
 
 
