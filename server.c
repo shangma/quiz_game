@@ -3,9 +3,9 @@
  * usage: server.c
  
  * duties: * sends questions to all clients				[ ]
-	       * records answers recieved by clients		[ ]
+	       * records answers recieved by clients                    [ ]
 		   * times-out clients who fail to respond		[ ]
-			 within set time limit						[ ]
+                    within set time limit				[ ]
 		   * announce winner of 100 question game		[ ]
 
  * TODO: Send Questions
@@ -231,7 +231,7 @@ struct client {
 		while((len = recv(conn, buff, BUFFSIZE, 0)) > 0)
 		{
 			(void) send(conn, buff, len, 0);
-		}		/* iterate, echoing all data received until end of file */
+		}
 		send_eof(conn);
 		free(value);
 		pthread_exit(NULL);
@@ -292,4 +292,12 @@ count_down(int num_of_seconds) {
 	}
 
 	return 0;
+}
+
+char question(char question[]){
+    char answer;
+    
+    (void) send(conn, buff, len, 0);
+    
+    return answer;
 }

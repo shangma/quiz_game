@@ -25,9 +25,11 @@
         <in>cnaiapi.h</in>
         <in>cnaiapi_win32.h</in>
       </df>
+      <in>client.c</in>
       <in>echoclient.c</in>
       <in>echoserver(win).c</in>
       <in>echoserver.c</in>
+      <in>server.c</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
